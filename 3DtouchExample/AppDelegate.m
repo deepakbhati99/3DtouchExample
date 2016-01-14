@@ -1,6 +1,6 @@
 //
 //  AppDelegate.m
-//  3DtouchExample
+//  viewAnimations
 //
 //  Created by Himanshu Khatri on 1/12/16.
 //  Copyright © 2016 bd 001. All rights reserved.
@@ -8,8 +8,10 @@
 
 #import "AppDelegate.h"
 #import "DetailViewController.h"
-
-@interface AppDelegate () <UISplitViewControllerDelegate>
+@import Photos;
+@import PhotosUI;
+@import MobileCoreServices;
+@interface AppDelegate () <UISplitViewControllerDelegate,PHLivePhotoViewDelegate>
 
 @end
 
@@ -18,37 +20,226 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
-    navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
-    splitViewController.delegate = self;
-    return YES;
+    
+    
+    
+    
+    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
+    UITableViewController *master=navigationController.viewControllers[0];
+
+        [[NSNotificationCenter defaultCenter] addObserver:master selector:@selector(showAnimation:) name:UIApplicationLaunchOptionsShortcutItemKey object:nil];
+    
+    BOOL isLaunchedFromQuickAction = false;
+    
+    
+    
+    UIApplicationShortcutItem *shortcutItem=launchOptions[UIApplicationLaunchOptionsShortcutItemKey];
+    // Check if it's launched from Quick Action
+    
+    if (shortcutItem){
+        
+        isLaunchedFromQuickAction = true;
+        // Handle the sortcutItem
+        [self handleQuickAction:shortcutItem];
+    }
+    else{
+        
+    }
+    
+    NSArray <UIApplicationShortcutItem*> *existingShortcutItems=application.shortcutItems;
+    if (!existingShortcutItems.count) {
+        
+        NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;
+        NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.transition",strbundle];
+        
+        // Construct the items.
+        UIMutableApplicationShortcutItem *aMutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:@"Transition Animation"];
+        [aMutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
+        
+        
+        NSString *dynamicItemIdentifier2=[NSString stringWithFormat:@"%@.pulse",strbundle];
+        
+        // Construct the items.
+        UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier2 localizedTitle:@"Pulse Animation"];
+        [aMutableShortcutItem2 setLocalizedSubtitle:@"Show Animation"];
+        [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
+    }
+
+
+    // Return false if the app was launched from a shortcut, so performAction... will not be called.
+    return !isLaunchedFromQuickAction;
+
+    
+    
+    
+
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+/*
+<dict>
+<key>UIApplicationShortcutItemIconFile</key>
+<string></string>
+<key>UIApplicationShortcutItemSubtitle</key>
+<string>show Animation</string>
+<key>UIApplicationShortcutItemTitle</key>
+<string>Transition Animation</string>
+<key>UIApplicationShortcutItemType</key>
+<string>$(PRODUCT_BUNDLE_IDENTIFIER).transition</string>
+</dict>
+<dict>
+<key>UIApplicationShortcutItemIconFile</key>
+<string></string>
+<key>UIApplicationShortcutItemSubtitle</key>
+<string>show Animation</string>
+<key>UIApplicationShortcutItemTitle</key>
+<string>Pulse Animation</string>
+<key>UIApplicationShortcutItemType</key>
+<string>$(PRODUCT_BUNDLE_IDENTIFIER).pulse</string>
+</dict>
+<dict>
+<key>UIApplicationShortcutItemIconFile</key>
+<string></string>
+<key>UIApplicationShortcutItemSubtitle</key>
+<string>show Animation</string>
+<key>UIApplicationShortcutItemTitle</key>
+<string>Shake Animation</string>
+<key>UIApplicationShortcutItemType</key>
+<string>$(PRODUCT_BUNDLE_IDENTIFIER).shake</string>
+</dict>
+<dict>
+<key>UIApplicationShortcutItemIconFile</key>
+<string></string>
+<key>UIApplicationShortcutItemSubtitle</key>
+<string>show Animation</string>
+<key>UIApplicationShortcutItemTitle</key>
+<string>Border Animation</string>
+<key>UIApplicationShortcutItemType</key>
+<string>$(PRODUCT_BUNDLE_IDENTIFIER).border</string>
+</dict>
+*/
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void(^)(BOOL succeeded))completionHandler{
+    
+    BOOL returnBoool=[self handleQuickAction:shortcutItem];
+
+    completionHandler(returnBoool);
+    
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+
+
+-(BOOL)handleQuickAction:(UIApplicationShortcutItem *)shortcutItem{
+    
+    BOOL quickActionHandled = false;
+    NSString *type = [shortcutItem.type componentsSeparatedByString:@"."].lastObject;
+
+    NSInteger selectedIndex;
+    
+    if ([type isEqual:@"simple"]) {
+        selectedIndex=0;
+        quickActionHandled = true;
+    }else if ([type isEqual:@"bounce"]){
+        selectedIndex=1;
+        quickActionHandled = true;
+    }else if ([type isEqual:@"transition"]){
+        selectedIndex=2;
+        quickActionHandled = true;
+        
+        NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;
+        NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.border",strbundle];
+        
+        // Construct the items.
+        UIMutableApplicationShortcutItem *aMutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:@"Border Animation"];
+        [aMutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
+        
+        
+        NSString *dynamicItemIdentifier2=[NSString stringWithFormat:@"%@.pulse",strbundle];
+        
+        // Construct the items.
+        UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier2 localizedTitle:@"Pulse Animation"];
+        [aMutableShortcutItem2 setLocalizedSubtitle:@"Show Animation"];
+        [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
+    }else if ([type isEqual:@"pulse"]){
+        selectedIndex=3;
+        quickActionHandled = true;
+        
+        
+        NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;
+        NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.transition",strbundle];
+        
+        // Construct the items.
+        UIMutableApplicationShortcutItem *aMutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:@"Transition Animation"];
+        [aMutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
+        
+        
+        NSString *dynamicItemIdentifier2=[NSString stringWithFormat:@"%@.shake",strbundle];
+        
+        // Construct the items.
+        UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier2 localizedTitle:@"Shake Animation"];
+        [aMutableShortcutItem2 setLocalizedSubtitle:@"Show Animation"];
+        [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
+        
+    }else if ([type isEqual:@"shake"]){
+        selectedIndex=4;
+        quickActionHandled = true;
+        
+        
+        NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;
+        NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.transition",strbundle];
+        
+        // Construct the items.
+        UIMutableApplicationShortcutItem *aMutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:@"Transition Animation"];
+        [aMutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
+        
+        
+        NSString *dynamicItemIdentifier2=[NSString stringWithFormat:@"%@.pulse",strbundle];
+        
+        // Construct the items.
+        UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier2 localizedTitle:@"Pulse Animation"];
+        [aMutableShortcutItem2 setLocalizedSubtitle:@"Show Animation"];
+        [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
+    }else{
+        selectedIndex=5;
+        quickActionHandled = true;
+        
+        NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;
+        NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.transition",strbundle];
+        
+        // Construct the items.
+        UIMutableApplicationShortcutItem *aMutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:@"Transition Animation"];
+        [aMutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
+        
+        
+        NSString *dynamicItemIdentifier2=[NSString stringWithFormat:@"%@.pulse",strbundle];
+        
+        // Construct the items.
+        UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier2 localizedTitle:@"Pulse Animation"];
+        [aMutableShortcutItem2 setLocalizedSubtitle:@"Show Animation"];
+        [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
+        
+    }
+    
+    
+
+
+
+    
+    if (quickActionHandled) {
+        NSIndexPath *ip=[NSIndexPath indexPathForRow:selectedIndex inSection:0];
+        [[NSNotificationCenter defaultCenter]postNotificationName:UIApplicationLaunchOptionsShortcutItemKey object:ip userInfo:@{
+                                                                            @"selectedIndexPath":ip
+                                                                            }];
+    }else{
+        UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"Action aborted" message:nil delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil  , nil];
+        [alert show];
+    }
+
+
+    return quickActionHandled;
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-}
 
 #pragma mark - Split view
-
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
     if ([secondaryViewController isKindOfClass:[UINavigationController class]] && [[(UINavigationController *)secondaryViewController topViewController] isKindOfClass:[DetailViewController class]] && ([(DetailViewController *)[(UINavigationController *)secondaryViewController topViewController] detailItem] == nil)) {
         // Return YES to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
@@ -56,6 +247,9 @@
     } else {
         return NO;
     }
+    
+    
 }
-
 @end
+
+

@@ -1,6 +1,6 @@
 //
 //  MasterViewController.m
-//  3DtouchExample
+//  viewAnimations
 //
 //  Created by Himanshu Khatri on 1/12/16.
 //  Copyright © 2016 bd 001. All rights reserved.
@@ -19,15 +19,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
-    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    
+
+    self.objects = [[NSMutableArray alloc] initWithArray:@[@"simple Animation Block",@"Animation with Bounce",@"Animation With Transition",@"Pulse",@"Shake",@"Border Animations"]];
+
 }
 
+-(void)showAnimation:(NSNotification *)notification{
+    
+    NSDictionary *noti=notification.userInfo;
+    
+//    UITableViewCell *cell=[self tableView:self.tableView cellForRowAtIndexPath:noti[@"selectedIndexPath"]];
+    [self.tableView selectRowAtIndexPath:noti[@"selectedIndexPath"] animated:YES scrollPosition:UITableViewScrollPositionNone];
+    [self performSegueWithIdentifier:@"showDetail" sender:self];
+    
+
+}
 - (void)viewWillAppear:(BOOL)animated {
-    self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
+    self.clearsSelectionOnViewWillAppear = YES;
     [super viewWillAppear:animated];
 }
 
@@ -36,26 +47,26 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)insertNewObject:(id)sender {
-    if (!self.objects) {
-        self.objects = [[NSMutableArray alloc] init];
-    }
-    [self.objects insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-}
+
 
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDate *object = self.objects[indexPath.row];
-        DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
-        [controller setDetailItem:object];
-        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-        controller.navigationItem.leftItemsSupplementBackButton = YES;
+    NSIndexPath *indexPath;
+    if ([[segue identifier] isEqualToString:@"showDetail"])//||[[segue identifier] isEqualToString:@"showPreview"]) {
+    {
+        
+        indexPath=[self.tableView indexPathForSelectedRow];
+
+
+    }else{
+        indexPath=[self.tableView indexPathForCell:sender];
     }
+    
+    NSDate *object = self.objects[indexPath.row];
+    DetailViewController *controller = (DetailViewController *)[segue destinationViewController] ;
+    [controller setDetailItem:object];
+    controller.x=indexPath.row;
 }
 
 #pragma mark - Table View
@@ -76,18 +87,6 @@
     return cell;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.objects removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-    }
-}
 
 @end

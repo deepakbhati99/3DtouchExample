@@ -53,5 +53,29 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <key>UIApplicationShortcutItems</key>
+    <array>
+        <dict>
+            <key>UIApplicationShortcutItemIconFile</key>
+            <string></string>
+            <key>UIApplicationShortcutItemSubtitle</key>
+            <string>show Animation</string>
+            <key>UIApplicationShortcutItemTitle</key>
+            <string>Simple Animation</string>
+            <key>UIApplicationShortcutItemType</key>
+            <string>$(PRODUCT_BUNDLE_IDENTIFIER).simple</string>
+        </dict>
+        <dict>
+            <key>UIApplicationShortcutItemIconFile</key>
+            <string></string>
+            <key>UIApplicationShortcutItemSubtitle</key>
+            <string>show Animation</string>
+            <key>UIApplicationShortcutItemTitle</key>
+            <string>Bounce Animation</string>
+            <key>UIApplicationShortcutItemType</key>
+            <string>$(PRODUCT_BUNDLE_IDENTIFIER).bounce</string>
+        </dict>
+    </array>
+
 </dict>
 </plist>
