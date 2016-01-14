@@ -11,6 +11,7 @@
 
 @interface MasterViewController : UITableViewController
 
+-(void)showAnimation:(NSNotification *)notification;
 
 
 @end

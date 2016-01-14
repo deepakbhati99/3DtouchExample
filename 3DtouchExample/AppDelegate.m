@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "DetailViewController.h"
+#import "MasterViewController.h"
 @import Photos;
 @import PhotosUI;
 @import MobileCoreServices;
@@ -25,9 +26,9 @@
     
     
     UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
-    UITableViewController *master=navigationController.viewControllers[0];
+    MasterViewController *master=navigationController.viewControllers[0];
 
-        [[NSNotificationCenter defaultCenter] addObserver:master selector:@selector(showAnimation:) name:UIApplicationLaunchOptionsShortcutItemKey object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:master selector:@selector(showAnimation:) name:UIApplicationLaunchOptionsShortcutItemKey object:nil];
     
     BOOL isLaunchedFromQuickAction = false;
     
@@ -229,8 +230,19 @@
                                                                             @"selectedIndexPath":ip
                                                                             }];
     }else{
-        UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"Action aborted" message:nil delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil  , nil];
-        [alert show];
+
+        UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"Action aborted" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        
+        UIAlertAction *cancelAction = [UIAlertAction
+                                       actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action")
+                                       style:UIAlertActionStyleCancel
+                                       handler:^(UIAlertAction *action)
+                                       {
+                                           NSLog(@"Cancel action");
+                                       }];
+        [alertController addAction:cancelAction];
+        [self.window.rootViewController presentViewController:alertController animated:YES completion:nil];
     }
 
 
