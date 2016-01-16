@@ -21,11 +21,13 @@
     // Do any additional setup after loading the view, typically from a nib.
     
 
+
     
 
     self.objects = [[NSMutableArray alloc] initWithArray:@[@"simple Animation Block",@"Animation with Bounce",@"Animation With Transition",@"Pulse",@"Shake",@"Border Animations"]];
 
 }
+
 
 -(void)showAnimation:(NSNotification *)notification{
     

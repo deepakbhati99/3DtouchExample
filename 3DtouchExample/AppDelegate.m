@@ -12,7 +12,7 @@
 @import Photos;
 @import PhotosUI;
 @import MobileCoreServices;
-@interface AppDelegate () <UISplitViewControllerDelegate,PHLivePhotoViewDelegate>
+@interface AppDelegate ()
 
 @end
 
@@ -21,26 +21,20 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
-    
-    
-    
+
     UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
     MasterViewController *master=navigationController.viewControllers[0];
-
     [[NSNotificationCenter defaultCenter] addObserver:master selector:@selector(showAnimation:) name:UIApplicationLaunchOptionsShortcutItemKey object:nil];
     
     BOOL isLaunchedFromQuickAction = false;
-    
-    
-    
+
     UIApplicationShortcutItem *shortcutItem=launchOptions[UIApplicationLaunchOptionsShortcutItemKey];
-    // Check if it's launched from Quick Action
     
+    // Check if it's launched from shortcutItem
     if (shortcutItem){
-        
         isLaunchedFromQuickAction = true;
-        // Handle the sortcutItem
+        
+        // Handle the sortcutItem with required Action
         [self handleQuickAction:shortcutItem];
     }
     else{
@@ -48,76 +42,19 @@
     }
     
     NSArray <UIApplicationShortcutItem*> *existingShortcutItems=application.shortcutItems;
+    //adding the dynamicShortcutItems if not exists
     if (!existingShortcutItems.count) {
-        
-        NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;
-        NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.transition",strbundle];
-        
-        // Construct the items.
-        UIMutableApplicationShortcutItem *aMutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:@"Transition Animation"];
-        [aMutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
-        
-        
-        NSString *dynamicItemIdentifier2=[NSString stringWithFormat:@"%@.pulse",strbundle];
-        
-        // Construct the items.
-        UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier2 localizedTitle:@"Pulse Animation"];
-        [aMutableShortcutItem2 setLocalizedSubtitle:@"Show Animation"];
-        [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
+        //custom method for updating the shortcutItems
+        [self updateShortCutItems:@"Transition" and:@"Pulse"];
     }
 
 
-    // Return false if the app was launched from a shortcut, so performAction... will not be called.
+    // Return false if the app was launched from a shortcut, so performActionForShortcutItem will not be called.
     return !isLaunchedFromQuickAction;
 
-    
-    
-    
 
 }
 
-/*
-<dict>
-<key>UIApplicationShortcutItemIconFile</key>
-<string></string>
-<key>UIApplicationShortcutItemSubtitle</key>
-<string>show Animation</string>
-<key>UIApplicationShortcutItemTitle</key>
-<string>Transition Animation</string>
-<key>UIApplicationShortcutItemType</key>
-<string>$(PRODUCT_BUNDLE_IDENTIFIER).transition</string>
-</dict>
-<dict>
-<key>UIApplicationShortcutItemIconFile</key>
-<string></string>
-<key>UIApplicationShortcutItemSubtitle</key>
-<string>show Animation</string>
-<key>UIApplicationShortcutItemTitle</key>
-<string>Pulse Animation</string>
-<key>UIApplicationShortcutItemType</key>
-<string>$(PRODUCT_BUNDLE_IDENTIFIER).pulse</string>
-</dict>
-<dict>
-<key>UIApplicationShortcutItemIconFile</key>
-<string></string>
-<key>UIApplicationShortcutItemSubtitle</key>
-<string>show Animation</string>
-<key>UIApplicationShortcutItemTitle</key>
-<string>Shake Animation</string>
-<key>UIApplicationShortcutItemType</key>
-<string>$(PRODUCT_BUNDLE_IDENTIFIER).shake</string>
-</dict>
-<dict>
-<key>UIApplicationShortcutItemIconFile</key>
-<string></string>
-<key>UIApplicationShortcutItemSubtitle</key>
-<string>show Animation</string>
-<key>UIApplicationShortcutItemTitle</key>
-<string>Border Animation</string>
-<key>UIApplicationShortcutItemType</key>
-<string>$(PRODUCT_BUNDLE_IDENTIFIER).border</string>
-</dict>
-*/
 - (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void(^)(BOOL succeeded))completionHandler{
     
     BOOL returnBoool=[self handleQuickAction:shortcutItem];
@@ -144,91 +81,34 @@
     }else if ([type isEqual:@"transition"]){
         selectedIndex=2;
         quickActionHandled = true;
-        
-        NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;
-        NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.border",strbundle];
-        
-        // Construct the items.
-        UIMutableApplicationShortcutItem *aMutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:@"Border Animation"];
-        [aMutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
-        
-        
-        NSString *dynamicItemIdentifier2=[NSString stringWithFormat:@"%@.pulse",strbundle];
-        
-        // Construct the items.
-        UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier2 localizedTitle:@"Pulse Animation"];
-        [aMutableShortcutItem2 setLocalizedSubtitle:@"Show Animation"];
-        [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
+    
+        [self updateShortCutItems:@"Border" and:@"Pulse"];
     }else if ([type isEqual:@"pulse"]){
         selectedIndex=3;
         quickActionHandled = true;
         
-        
-        NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;
-        NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.transition",strbundle];
-        
-        // Construct the items.
-        UIMutableApplicationShortcutItem *aMutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:@"Transition Animation"];
-        [aMutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
-        
-        
-        NSString *dynamicItemIdentifier2=[NSString stringWithFormat:@"%@.shake",strbundle];
-        
-        // Construct the items.
-        UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier2 localizedTitle:@"Shake Animation"];
-        [aMutableShortcutItem2 setLocalizedSubtitle:@"Show Animation"];
-        [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
+        [self updateShortCutItems:@"Transition" and:@"Shake"];
         
     }else if ([type isEqual:@"shake"]){
         selectedIndex=4;
         quickActionHandled = true;
         
-        
-        NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;
-        NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.transition",strbundle];
-        
-        // Construct the items.
-        UIMutableApplicationShortcutItem *aMutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:@"Transition Animation"];
-        [aMutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
-        
-        
-        NSString *dynamicItemIdentifier2=[NSString stringWithFormat:@"%@.pulse",strbundle];
-        
-        // Construct the items.
-        UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier2 localizedTitle:@"Pulse Animation"];
-        [aMutableShortcutItem2 setLocalizedSubtitle:@"Show Animation"];
-        [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
+        [self updateShortCutItems:@"Border" and:@"Pulse"];
     }else{
         selectedIndex=5;
         quickActionHandled = true;
-        
-        NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;
-        NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.transition",strbundle];
-        
-        // Construct the items.
-        UIMutableApplicationShortcutItem *aMutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:@"Transition Animation"];
-        [aMutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
-        
-        
-        NSString *dynamicItemIdentifier2=[NSString stringWithFormat:@"%@.pulse",strbundle];
-        
-        // Construct the items.
-        UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier2 localizedTitle:@"Pulse Animation"];
-        [aMutableShortcutItem2 setLocalizedSubtitle:@"Show Animation"];
-        [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
-        
+    
+        [self updateShortCutItems:@"Transition" and:@"Pulse"];
     }
     
-    
 
-
-
-    
     if (quickActionHandled) {
         NSIndexPath *ip=[NSIndexPath indexPathForRow:selectedIndex inSection:0];
         [[NSNotificationCenter defaultCenter]postNotificationName:UIApplicationLaunchOptionsShortcutItemKey object:ip userInfo:@{
-                                                                            @"selectedIndexPath":ip
-                                                                            }];
+                                                                                                                                 @"selectedIndexPath":ip
+                                                                           
+                                                                                                                                 }];
+
     }else{
 
         UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"Action aborted" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
@@ -241,6 +121,7 @@
                                        {
                                            NSLog(@"Cancel action");
                                        }];
+        
         [alertController addAction:cancelAction];
         [self.window.rootViewController presentViewController:alertController animated:YES completion:nil];
     }
@@ -250,18 +131,36 @@
 }
 
 
-
-#pragma mark - Split view
-- (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
-    if ([secondaryViewController isKindOfClass:[UINavigationController class]] && [[(UINavigationController *)secondaryViewController topViewController] isKindOfClass:[DetailViewController class]] && ([(DetailViewController *)[(UINavigationController *)secondaryViewController topViewController] detailItem] == nil)) {
-        // Return YES to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
-        return YES;
-    } else {
-        return NO;
-    }
+/*creating the mutableShortCutItems and updating it*/
+-(void)updateShortCutItems:(NSString *)type1 and:(NSString *)type2{
+    
+    UIMutableApplicationShortcutItem *aMutableShortcutItem = [self prepareShortcutItemWithIdentifier:type1];
+    
+    UIMutableApplicationShortcutItem *aMutableShortcutItem2 = [self prepareShortcutItemWithIdentifier:type2];
     
     
+    
+    
+    //setting the UIApplicationShortcutItems with our new Items
+    [[UIApplication sharedApplication]setShortcutItems:@[aMutableShortcutItem,aMutableShortcutItem2]];
 }
+
+-(UIMutableApplicationShortcutItem *)prepareShortcutItemWithIdentifier:(NSString *)itemIdentifier{
+    
+    NSString *strbundle=[NSBundle mainBundle].bundleIdentifier;//getting bundleIdentifier
+    
+    //creating a unique identifier For the UIApplicationShortcutItem
+    NSString *dynamicItemIdentifier=[NSString stringWithFormat:@"%@.%@",strbundle,itemIdentifier.lowercaseString];
+    //creating title for the UIApplicationShortcutItem
+    NSString *dynamicItemTitle=[NSString stringWithFormat:@"%@ Anmation",itemIdentifier];
+    
+    // Construct the UIApplicationShortcutItem.
+    UIMutableApplicationShortcutItem *mutableShortcutItem = [[UIMutableApplicationShortcutItem alloc] initWithType:dynamicItemIdentifier localizedTitle:dynamicItemTitle];
+    [mutableShortcutItem setLocalizedSubtitle:@"Show Animation"];
+    
+    return mutableShortcutItem;
+}
+
 @end
 
 

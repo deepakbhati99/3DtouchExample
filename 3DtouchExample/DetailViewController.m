@@ -23,6 +23,7 @@
     
     
 }
+
 @end
 
 static NSString *constantPoppingEffect=@"popping";
@@ -33,6 +34,68 @@ static NSString *constantShakeEffect=@"shakeEffect";
 @implementation DetailViewController
 
 #pragma mark - Managing the detail item
+
+
+- (UIPreviewAction *)previewActionItems {
+    return self.previewActions;
+}
+- (UIPreviewAction *)previewActions {
+    if (_previewActions == nil) {
+
+        UIPreviewAction *printAction = [UIPreviewAction
+                                        actionWithTitle:@"simple"
+                                        style:UIPreviewActionStyleDefault
+                                        handler:^(UIPreviewAction * _Nonnull action,
+                                                  UIViewController * _Nonnull previewViewController) {
+                                            // ... code to handle action here
+
+                                        }];
+        
+        UIPreviewAction *printAction1 = [UIPreviewAction
+                                        actionWithTitle:@"Bounce"
+                                        style:UIPreviewActionStyleDefault
+                                        handler:^(UIPreviewAction * _Nonnull action,
+                                                  UIViewController * _Nonnull previewViewController) {
+                                            // ... code to handle action here
+
+                                        }];
+        UIPreviewAction *printAction2 = [UIPreviewAction
+                                        actionWithTitle:@"Transition"
+                                        style:UIPreviewActionStyleDefault
+                                        handler:^(UIPreviewAction * _Nonnull action,
+                                                  UIViewController * _Nonnull previewViewController) {
+                                            // ... code to handle action here
+
+                                        }];
+        UIPreviewAction *printAction3 = [UIPreviewAction
+                                        actionWithTitle:@"Pulse"
+                                        style:UIPreviewActionStyleDefault
+                                        handler:^(UIPreviewAction * _Nonnull action,
+                                                  UIViewController * _Nonnull previewViewController) {
+                                            // ... code to handle action here
+
+                                        }];
+        UIPreviewAction *printAction4 = [UIPreviewAction
+                                        actionWithTitle:@"Shake"
+                                        style:UIPreviewActionStyleDefault
+                                        handler:^(UIPreviewAction * _Nonnull action,
+                                                  UIViewController * _Nonnull previewViewController) {
+                                            // ... code to handle action here
+                                        }];
+        UIPreviewAction *printAction5 = [UIPreviewAction
+                                        actionWithTitle:@"Border"
+                                        style:UIPreviewActionStyleDefault
+                                        handler:^(UIPreviewAction * _Nonnull action,
+                                                  UIViewController * _Nonnull previewViewController) {
+                                            // ... code to handle action here
+                                        }];
+        _previewActions = @[printAction,printAction1,printAction2,printAction3,printAction4,printAction5];
+    }
+    return _previewActions;
+}
+
+
+
 
 - (void)setDetailItem:(id)newDetailItem {
     if (_detailItem != newDetailItem) {

@@ -14,5 +14,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
 @property NSInteger x;
 
+@property (strong,nonatomic)UIPreviewAction *previewActions;
 @end
 
