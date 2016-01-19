@@ -9,7 +9,7 @@
 /*	copy this code to your plist and run.	*/
 
 ```xml
-<myxml>
+
 <key>UIApplicationShortcutItems</key>
 <array>
 <dict>
@@ -33,7 +33,7 @@
 <string>$(PRODUCT_BUNDLE_IDENTIFIER).bounce</string>
 </dict>
 </array>
-</myxml>
+
 ```
 
 /*	connect the segue from your cell to the viewController 	*/
