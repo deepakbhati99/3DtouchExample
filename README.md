@@ -1,11 +1,11 @@
 # 3DtouchExample
 
 
-/*	adding the static ShortcutItems using Plist./*/
+/*	adding the static ShortcutItems using Plist. */
 
-/*	these will be shown even the app is not launched once after downloading.	/*/
+/*	these will be shown even the app is not launched once after downloading.	*/
 
-/*	copy this code to your plist and run.	/*/
+/*	copy this code to your plist and run.	*/
 
 ```xml
 
@@ -35,13 +35,19 @@
 
 ```
 
-/*	connect the segue from your cell to the viewController 	*/
+/*	connect the segue from your cell to the viewController. 	*/
+
 /*	add the Identifier to your segue	*/
+
 /*	now check the Peek & Pop.	*/
+
 /*	Preview Identifier will preview the viewController in your UITableView or UICollectionView.*/
+
 /*	CommitIdentifier will commit the viewController in your UITableView or UICollectionView.*/
 
 ￼
+
+
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
