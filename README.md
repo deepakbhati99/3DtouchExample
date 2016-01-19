@@ -1,12 +1,11 @@
 # 3DtouchExample
 
 
+/*	adding the static ShortcutItems using Plist./*/
 
+/*	these will be shown even the app is not launched once after downloading.	/*/
 
-
-/*	adding the static ShortcutItems using Plist.	*/
-/*	these will be shown even the app is not launched once after downloading.	*/
-/*	copy this code to your plist and run.	*/
+/*	copy this code to your plist and run.	/*/
 
 ```xml
 
