@@ -45,7 +45,7 @@
 
 /*	CommitIdentifier will commit the viewController in your UITableView or UICollectionView.*/
 
-￼
+￼![Alt text](https://github.com/deepakbhati99/viewAnimations/blob/master/screenShot.png "Screeshot #1")
 
 
 
