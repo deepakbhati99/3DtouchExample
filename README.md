@@ -45,12 +45,12 @@
 
 /*	CommitIdentifier will commit the viewController in your UITableView or UICollectionView.*/
 
-￼![Alt text](https://github.com/deepakbhati99/viewAnimations/blob/master/screenShot.png "Screeshot #1")
+￼![Alt text](https://github.com/deepakbhati99/3DtouchExample/blob/master/screenShot.png "Screeshot #1")
 
 
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+-(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
     // Override point for customization after application launch.
 
